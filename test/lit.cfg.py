@@ -20,7 +20,10 @@ config.test_source_root = os.path.dirname(__file__)
 opt = getattr(config, "opt_tool", "opt-22")
 filecheck = getattr(config, "filecheck_tool", "FileCheck-22")
 lli = getattr(config, "lli_tool", "lli-22")
+# llc/clang are used only by the benchmark checksum test, which compiles the
+# bench kernels natively (the rest of the suite runs under lli).
 llc = getattr(config, "llc_tool", "llc-22")
+clang = getattr(config, "clang_tool", "clang-22")
 
 # Path to libNybbler.so. Set by lit.site.cfg.py after a CMake build; fall back
 # to a build/ dir next to the source tree for convenience.
@@ -33,6 +36,7 @@ if plugin is None:
 tools_dir = os.path.join(os.path.dirname(config.test_source_root), "tools")
 shape_dir = os.path.join(config.test_source_root, "shape")
 diff_dir = os.path.join(config.test_source_root, "diff")
+bench_dir = os.path.join(os.path.dirname(config.test_source_root), "bench")
 
 # The codegen guard cross-compiles to x86-64; an LLVM built without that target
 # registered can't run it, so gate the test rather than fail spuriously.
@@ -47,6 +51,8 @@ config.substitutions.append(("%opt", opt))
 config.substitutions.append(("%FileCheck", filecheck))
 config.substitutions.append(("%llc", llc))
 config.substitutions.append(("%lli", lli))
+config.substitutions.append(("%llc", llc))
+config.substitutions.append(("%clang", clang))
 config.substitutions.append(("%nybbler", plugin))
 config.substitutions.append(("%python", sys.executable))
 config.substitutions.append(("%diff_runner", os.path.join(tools_dir, "diff_runner.py")))
@@ -54,3 +60,4 @@ config.substitutions.append(("%coverage_check", os.path.join(tools_dir, "coverag
 config.substitutions.append(("%codegen_check", os.path.join(tools_dir, "codegen_check.py")))
 config.substitutions.append(("%shape_dir", shape_dir))
 config.substitutions.append(("%diff_dir", diff_dir))
+config.substitutions.append(("%bench_dir", bench_dir))
